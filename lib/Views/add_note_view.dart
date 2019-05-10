@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:notes_app/Classes/note.dart';
+import 'package:notes_app/Utils/db_halper.dart';
 
 class AddNote extends StatefulWidget {
   final Note note;
@@ -15,10 +16,21 @@ class _AddNoteState extends State<AddNote> {
   TextEditingController _titleControllor;
   TextEditingController _noteControllor;
 
+  final DatabaseHelper helper = DatabaseHelper();
+
   @override
   void initState() {
+    _titleControllor = TextEditingController();
+    _noteControllor = TextEditingController();
     _setData();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _titleControllor.dispose();
+    _noteControllor.dispose();
+    super.dispose();
   }
 
   _setData() {
@@ -42,6 +54,7 @@ class _AddNoteState extends State<AddNote> {
       _titleControllor = TextEditingController(
         text: widget.note.title,
       );
+      print(widget.note.title);
       _noteControllor = TextEditingController(text: widget.note.note);
     }
   }
@@ -96,7 +109,14 @@ class _AddNoteState extends State<AddNote> {
                   ? RawMaterialButton(
                       fillColor: Colors.brown,
                       shape: StadiumBorder(),
-                      onPressed: () {},
+                      onPressed: () {
+                        // print(_titleControllor.text);
+                        // print(_noteControllor.text);
+                        Note note = Note(
+                            title: _titleControllor.text,
+                            note: _noteControllor.text);
+                        helper.insertNote(note);
+                      },
                       child: Text(
                         'Save',
                         style: TextStyle(color: Colors.white),

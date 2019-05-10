@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:notes_app/Classes/data.dart';
-import 'package:notes_app/Classes/note.dart';
+import 'package:notes_app/Utils/db_halper.dart';
 // import 'package:notes_app/CustomWidgets/custom_card.dart';
 import 'package:notes_app/Views/add_note_view.dart';
 
 class HomeView extends StatelessWidget {
+  final DatabaseHelper databaseHelper = DatabaseHelper();
   @override
   Widget build(BuildContext context) {
-    List<Note> data = getData();
+    // List<Note> data = getData();
+    databaseHelper.initlizeDatabase();
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
@@ -31,24 +32,33 @@ class HomeView extends StatelessWidget {
             // ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.882,
-              child: ListView.builder(
-                itemCount: data.length,
-                itemBuilder: (BuildContext context, int i) {
-                  return Column(
-                    children: <Widget>[
-                      ListTile(
-                        title: Text(data[i].title),
-                        onTap: () {
-                          Route route = MaterialPageRoute(
-                              builder: (context) => AddNote(
-                                    note: data[i],
-                                  ));
-                          Navigator.push(context, route);
-                        },
-                      ),
-                      Divider(color: Colors.brown)
-                    ],
-                  );
+              child: FutureBuilder(
+                future: databaseHelper.getNoteList(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.data == null) {
+                    return Text('Loading');
+                  } else {
+                    return ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (BuildContext context, int i) {
+                        return Column(
+                          children: <Widget>[
+                            ListTile(
+                              title: Text(snapshot.data[i].title),
+                              onTap: () {
+                                Route route = MaterialPageRoute(
+                                    builder: (context) => AddNote(
+                                          note: snapshot.data[i],
+                                        ));
+                                Navigator.push(context, route);
+                              },
+                            ),
+                            Divider(color: Colors.brown)
+                          ],
+                        );
+                      },
+                    );
+                  }
                 },
               ),
             )
@@ -68,3 +78,27 @@ class HomeView extends StatelessWidget {
     );
   }
 }
+
+/*
+ListView.builder(
+                itemCount: data.length,
+                itemBuilder: (BuildContext context, int i) {
+                  return Column(
+                    children: <Widget>[
+                      ListTile(
+                        title: Text(data[i].title),
+                        onTap: () {
+                          Route route = MaterialPageRoute(
+                              builder: (context) => AddNote(
+                                    note: data[i],
+                                  ));
+                          Navigator.push(context, route);
+                        },
+                      ),
+                      Divider(color: Colors.brown)
+                    ],
+                  );
+                },
+              ),
+
+*/
