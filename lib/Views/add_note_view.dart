@@ -47,7 +47,10 @@ class _AddNoteState extends State<AddNote> {
         ),
         IconButton(
           icon: Icon(Icons.delete),
-          onPressed: () {},
+          onPressed: () {
+            helper.deleteNote(widget.note.id);
+            Navigator.pop(context);
+          },
         ),
       ];
       title = 'View Note';
@@ -70,13 +73,6 @@ class _AddNoteState extends State<AddNote> {
         padding: EdgeInsets.all(8.0),
         child: ListView(
           children: <Widget>[
-            // Container(
-            //   padding: EdgeInsets.only(left: 10),
-            //   child: Text(
-            //     'Add Notes',
-            //     style: TextStyle(fontSize: 35.0),
-            //   ),
-            // ),
             SizedBox(
               height: 10,
             ),
@@ -110,12 +106,18 @@ class _AddNoteState extends State<AddNote> {
                       fillColor: Colors.brown,
                       shape: StadiumBorder(),
                       onPressed: () {
-                        // print(_titleControllor.text);
-                        // print(_noteControllor.text);
-                        Note note = Note(
-                            title: _titleControllor.text,
-                            note: _noteControllor.text);
-                        helper.insertNote(note);
+                        if (widget.note != null) {
+                          widget.note.title = _titleControllor.text;
+                          widget.note.note = _noteControllor.text;
+                          helper.updateNote(widget.note);
+                        } else {
+                          Note note = Note(
+                              title: _titleControllor.text,
+                              note: _noteControllor.text);
+                          helper.insertNote(note);
+                        }
+
+                        Navigator.pop(context);
                       },
                       child: Text(
                         'Save',

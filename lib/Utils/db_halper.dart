@@ -52,7 +52,9 @@ class DatabaseHelper {
     List<Note> noteList = List<Note>();
     for (int i = 0; i < count; i++) {
       Note note = Note(
-          title: noteMapList[i]['Title'], note: noteMapList[i]['Description']);
+          id: noteMapList[i]['ID'],
+          title: noteMapList[i]['Title'],
+          note: noteMapList[i]['Description']);
       noteList.add(note);
     }
     return noteList;
@@ -61,6 +63,20 @@ class DatabaseHelper {
   Future<int> insertNote(Note note) async {
     Database db = await this.database;
     var result = await db.insert(tableName, note.toMap());
+    return result;
+  }
+
+  Future<int> deleteNote(int noteid) async {
+    var db = await this.database;
+    int result =
+        await db.rawDelete('DELETE FROM $tableName WHERE $id = $noteid');
+    return result;
+  }
+
+  Future<int> updateNote(Note note) async {
+    var db = await this.database;
+    var result = await db.update(tableName, note.toMap(),
+        where: '$id = ?', whereArgs: [note.id]);
     return result;
   }
 }

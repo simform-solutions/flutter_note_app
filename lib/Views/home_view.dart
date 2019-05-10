@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:notes_app/Utils/db_halper.dart';
-// import 'package:notes_app/CustomWidgets/custom_card.dart';
 import 'package:notes_app/Views/add_note_view.dart';
 
 class HomeView extends StatelessWidget {
   final DatabaseHelper databaseHelper = DatabaseHelper();
   @override
   Widget build(BuildContext context) {
-    // List<Note> data = getData();
     databaseHelper.initlizeDatabase();
     return Scaffold(
       appBar: AppBar(
@@ -23,13 +21,6 @@ class HomeView extends StatelessWidget {
         padding: EdgeInsets.all(8.0),
         child: ListView(
           children: <Widget>[
-            // Container(
-            //   padding: EdgeInsets.only(left: 10),
-            //   child: Text(
-            //     'Notes',
-            //     style: TextStyle(fontSize: 35.0),
-            //   ),
-            // ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.882,
               child: FutureBuilder(
@@ -38,6 +29,9 @@ class HomeView extends StatelessWidget {
                   if (snapshot.data == null) {
                     return Text('Loading');
                   } else {
+                    if(snapshot.data.length != 1){
+                      return Center(child: Text('No Notes, Create New one'),);
+                    }
                     return ListView.builder(
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int i) {
@@ -78,27 +72,3 @@ class HomeView extends StatelessWidget {
     );
   }
 }
-
-/*
-ListView.builder(
-                itemCount: data.length,
-                itemBuilder: (BuildContext context, int i) {
-                  return Column(
-                    children: <Widget>[
-                      ListTile(
-                        title: Text(data[i].title),
-                        onTap: () {
-                          Route route = MaterialPageRoute(
-                              builder: (context) => AddNote(
-                                    note: data[i],
-                                  ));
-                          Navigator.push(context, route);
-                        },
-                      ),
-                      Divider(color: Colors.brown)
-                    ],
-                  );
-                },
-              ),
-
-*/
