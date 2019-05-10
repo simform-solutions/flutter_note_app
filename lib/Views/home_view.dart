@@ -29,8 +29,10 @@ class HomeView extends StatelessWidget {
                   if (snapshot.data == null) {
                     return Text('Loading');
                   } else {
-                    if(snapshot.data.length != 1){
-                      return Center(child: Text('No Notes, Create New one'),);
+                    if (snapshot.data.length != 1) {
+                      return Center(
+                        child: Text('No Notes, Create New one'),
+                      );
                     }
                     return ListView.builder(
                       itemCount: snapshot.data.length,
