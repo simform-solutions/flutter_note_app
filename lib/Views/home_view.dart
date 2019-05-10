@@ -29,7 +29,7 @@ class HomeView extends StatelessWidget {
                   if (snapshot.data == null) {
                     return Text('Loading');
                   } else {
-                    if (snapshot.data.length != 1) {
+                    if (snapshot.data.length < 1) {
                       return Center(
                         child: Text('No Notes, Create New one'),
                       );
