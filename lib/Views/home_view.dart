@@ -10,6 +10,12 @@ class HomeView extends StatelessWidget {
     List<Note> data = getData();
     return Scaffold(
       appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.share),
+          )
+        ],
         title: Text('Notes'),
       ),
       body: Container(

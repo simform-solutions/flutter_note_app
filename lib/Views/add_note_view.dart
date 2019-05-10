@@ -1,20 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:notes_app/Classes/note.dart';
 
-class AddNote extends StatelessWidget {
+class AddNote extends StatefulWidget {
   final Note note;
   AddNote({this.note});
   @override
-  Widget build(BuildContext context) {
-    String title = 'Add Note';
-    List<Widget> icons;
-    TextEditingController _titleControllor;
-    TextEditingController _noteControllor;
-    if (note != null) {
+  _AddNoteState createState() => _AddNoteState();
+}
+
+class _AddNoteState extends State<AddNote> {
+  bool _isEditiable = true;
+  String title = 'Add Note';
+  List<Widget> icons;
+  TextEditingController _titleControllor;
+  TextEditingController _noteControllor;
+
+  @override
+  void initState() {
+    _setData();
+    super.initState();
+  }
+
+  _setData() {
+    if (widget.note != null) {
+      _isEditiable = false;
       icons = [
         IconButton(
           icon: Icon(Icons.edit),
-          onPressed: () {},
+          onPressed: () {
+            setState(() {
+              _isEditiable = !_isEditiable;
+            });
+          },
         ),
         IconButton(
           icon: Icon(Icons.delete),
@@ -23,10 +40,14 @@ class AddNote extends StatelessWidget {
       ];
       title = 'View Note';
       _titleControllor = TextEditingController(
-        text: note.title,
+        text: widget.note.title,
       );
-      _noteControllor = TextEditingController(text: note.note);
+      _noteControllor = TextEditingController(text: widget.note.note);
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         actions: icons,
@@ -47,7 +68,7 @@ class AddNote extends StatelessWidget {
               height: 10,
             ),
             TextField(
-              enabled: note == null ? true : false,
+              enabled: _isEditiable ? true : false,
               controller: _titleControllor,
               decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -58,7 +79,7 @@ class AddNote extends StatelessWidget {
               height: 20,
             ),
             TextField(
-              enabled: note == null ? true : false,
+              enabled: _isEditiable ? true : false,
               controller: _noteControllor,
               keyboardType: TextInputType.multiline,
               maxLines: 10,
@@ -71,7 +92,7 @@ class AddNote extends StatelessWidget {
               height: 20,
             ),
             Container(
-              child: note == null
+              child: _isEditiable
                   ? RawMaterialButton(
                       fillColor: Colors.brown,
                       shape: StadiumBorder(),
