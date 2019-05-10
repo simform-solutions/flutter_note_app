@@ -10,8 +10,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Notes App',
       theme: ThemeData(
+        fontFamily: 'Montserrat',
         brightness: Brightness.light,
-        primarySwatch: Colors.red,
+        primarySwatch: Colors.brown,
       ),
       home: HomeView(),
     );
