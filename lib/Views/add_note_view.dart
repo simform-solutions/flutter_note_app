@@ -169,7 +169,7 @@ class _AddNoteState extends State<AddNote> {
             Container(
               child: _isEditiable
                   ? RawMaterialButton(
-                      fillColor: Colors.brown,
+                      fillColor: Theme.of(context).accentColor,
                       shape: StadiumBorder(),
                       onPressed: () {
                         _saveNote();

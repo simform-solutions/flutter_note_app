@@ -1,20 +1,20 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:notes_app/Utils/db_halper.dart';
+import 'package:notes_app/Utils/theme_bloc.dart';
 import 'package:notes_app/Views/add_note_view.dart';
 
 final routeObserver = RouteObserver<PageRoute>();
 final duration = const Duration(milliseconds: 300);
 
 class HomeView extends StatefulWidget {
+  final bool darkThemeEnabled;
+  HomeView(this.darkThemeEnabled);
   @override
   _HomeViewState createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> with RouteAware {
   GlobalKey _fabKey = GlobalKey();
-  bool _fabVisible = true;
   final DatabaseHelper databaseHelper = DatabaseHelper();
   @override
   didChangeDependencies() {
@@ -29,14 +29,6 @@ class _HomeViewState extends State<HomeView> with RouteAware {
   }
 
   @override
-  didPopNext() {
-    // Show back the FAB on transition back ended
-    Timer(duration, () {
-      setState(() => _fabVisible = true);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     databaseHelper.initlizeDatabase();
     return Scaffold(
@@ -45,9 +37,22 @@ class _HomeViewState extends State<HomeView> with RouteAware {
           IconButton(
             onPressed: () {},
             icon: Icon(Icons.share),
-          )
+          ),
         ],
         title: Text('Notes'),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: <Widget>[
+            ListTile(
+              title: Text('Dark Theme'),
+              trailing: Switch(
+                value: widget.darkThemeEnabled,
+                onChanged: bloc.changeTheme,
+              ),
+            )
+          ],
+        ),
       ),
       body: Container(
         padding: EdgeInsets.all(8.0),
@@ -81,7 +86,7 @@ class _HomeViewState extends State<HomeView> with RouteAware {
                                 Navigator.push(context, route);
                               },
                             ),
-                            Divider(color: Colors.brown)
+                            Divider(color: Theme.of(context).accentColor)
                           ],
                         );
                       },
@@ -93,20 +98,18 @@ class _HomeViewState extends State<HomeView> with RouteAware {
           ],
         ),
       ),
-      floatingActionButton: Visibility(
-        visible: _fabVisible,
-        child: _buildFAB(context, key: _fabKey),
-      ),
-      // FloatingActionButton(
-      //   backgroundColor: Color(0xFF4e342e),
-      //   onPressed: () {
-      //     Route route = MaterialPageRoute(builder: (context) => AddNote());
-      //     Navigator.push(context, route);
-      //   },
-      //   child: Icon(
-      //     Icons.add,
-      //   ),
-      // ),
+      floatingActionButton: _buildFAB(context, key: _fabKey),
+      //  Row(
+      //   mainAxisAlignment: MainAxisAlignment.end,
+      //   children: <Widget>[
+
+      //     FloatingActionButton(
+      //       onPressed: () {},
+      //       child: Icon(Icons.brush),
+      //     ),
+
+      //   ],
+      // )
     );
   }
 
@@ -118,9 +121,6 @@ class _HomeViewState extends State<HomeView> with RouteAware {
       );
 
   _onFabTap(BuildContext context) {
-    // Hide the FAB on transition start
-    // setState(() => _fabVisible = false);
-
     final RenderBox fabRenderBox = _fabKey.currentContext.findRenderObject();
     final fabSize = fabRenderBox.size;
     final fabOffset = fabRenderBox.localToGlobal(Offset.zero);
