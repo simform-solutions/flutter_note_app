@@ -57,7 +57,6 @@ class _AddNoteState extends State<AddNote> {
       _titleControllor = TextEditingController(
         text: widget.note.title,
       );
-      print(widget.note.title);
       _noteControllor = TextEditingController(text: widget.note.note);
     }
   }
@@ -67,7 +66,7 @@ class _AddNoteState extends State<AddNote> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('You want to Delete This Note?'),
+            title: Text('Are you sure, you want to Delete This Note?'),
             actions: <Widget>[
               RawMaterialButton(
                 onPressed: () {
@@ -98,13 +97,13 @@ class _AddNoteState extends State<AddNote> {
 
   bool _checkNotNull() {
     bool res;
-    if (_titleControllor.text == '' && _noteControllor.text == '') {
+    if (_titleControllor.text.isEmpty && _noteControllor.text.isEmpty) {
       _showSnakbar('Title and Note cannot be empty');
       res = false;
-    } else if (_noteControllor.text == '') {
+    } else if (_noteControllor.text.isEmpty) {
       _showSnakbar('Note cannot be empty');
       res = false;
-    } else if (_titleControllor.text == '') {
+    } else if (_titleControllor.text.isEmpty) {
       _showSnakbar('Title cannot be empty');
       res = false;
     } else {
