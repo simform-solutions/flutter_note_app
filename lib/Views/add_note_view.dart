@@ -15,6 +15,7 @@ class _AddNoteState extends State<AddNote> {
   List<Widget> icons;
   TextEditingController _titleControllor;
   TextEditingController _noteControllor;
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   final DatabaseHelper helper = DatabaseHelper();
 
@@ -48,8 +49,7 @@ class _AddNoteState extends State<AddNote> {
         IconButton(
           icon: Icon(Icons.delete),
           onPressed: () {
-            helper.deleteNote(widget.note.id);
-            Navigator.pop(context);
+            _deleteNote();
           },
         ),
       ];
@@ -62,9 +62,76 @@ class _AddNoteState extends State<AddNote> {
     }
   }
 
+  _deleteNote() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('You want to Delete This Note?'),
+            actions: <Widget>[
+              RawMaterialButton(
+                onPressed: () {
+                  helper.deleteNote(widget.note.id);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                child: Text('Yes'),
+              ),
+              RawMaterialButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('No'),
+              ),
+            ],
+          );
+        });
+  }
+
+  _showSnakbar(String msg) {
+    final snackbar = SnackBar(
+      content: Text(msg),
+      backgroundColor: Colors.brown,
+    );
+    scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
+  bool _checkNotNull() {
+    bool res;
+    if (_titleControllor.text == '' && _noteControllor.text == '') {
+      _showSnakbar('Title and Note cannot be empty');
+      res = false;
+    } else if (_noteControllor.text == '') {
+      _showSnakbar('Note cannot be empty');
+      res = false;
+    } else if (_titleControllor.text == '') {
+      _showSnakbar('Title cannot be empty');
+      res = false;
+    } else {
+      res = true;
+    }
+    return res;
+  }
+
+  _saveNote() {
+    if (_checkNotNull() == true) {
+      if (widget.note != null) {
+        widget.note.title = _titleControllor.text;
+        widget.note.note = _noteControllor.text;
+        helper.updateNote(widget.note);
+      } else {
+        Note note =
+            Note(title: _titleControllor.text, note: _noteControllor.text);
+        helper.insertNote(note);
+      }
+      Navigator.pop(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         actions: icons,
         title: Text(title),
@@ -106,18 +173,7 @@ class _AddNoteState extends State<AddNote> {
                       fillColor: Colors.brown,
                       shape: StadiumBorder(),
                       onPressed: () {
-                        if (widget.note != null) {
-                          widget.note.title = _titleControllor.text;
-                          widget.note.note = _noteControllor.text;
-                          helper.updateNote(widget.note);
-                        } else {
-                          Note note = Note(
-                              title: _titleControllor.text,
-                              note: _noteControllor.text);
-                          helper.insertNote(note);
-                        }
-
-                        Navigator.pop(context);
+                        _saveNote();
                       },
                       child: Text(
                         'Save',
