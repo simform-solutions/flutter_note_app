@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:notes_app/Utils/db_halper.dart';
 import 'package:notes_app/Utils/theme_bloc.dart';
 import 'package:notes_app/Views/add_note_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final routeObserver = RouteObserver<PageRoute>();
 final duration = const Duration(milliseconds: 300);
@@ -15,6 +16,18 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> with RouteAware {
   GlobalKey _fabKey = GlobalKey();
+  String _themeType;
+
+  @override
+  void initState() {
+    if (!widget.darkThemeEnabled) {
+      _themeType = 'Light Theme';
+    } else {
+      _themeType = 'Dark Theme';
+    }
+    super.initState();
+  }
+
   final DatabaseHelper databaseHelper = DatabaseHelper();
   @override
   didChangeDependencies() {
@@ -28,6 +41,11 @@ class _HomeViewState extends State<HomeView> with RouteAware {
     routeObserver.unsubscribe(this);
   }
 
+  _setPref(bool res) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('darkTheme', res);
+  }
+
   @override
   Widget build(BuildContext context) {
     databaseHelper.initlizeDatabase();
@@ -38,21 +56,29 @@ class _HomeViewState extends State<HomeView> with RouteAware {
             onPressed: () {},
             icon: Icon(Icons.share),
           ),
+          PopupMenuButton<bool>(
+            onSelected: (res) {
+              bloc.changeTheme(res);
+              _setPref(res);
+              setState(() {
+                if (_themeType == 'Dark Theme') {
+                  _themeType = 'Light Theme';
+                } else {
+                  _themeType = 'Dark Theme';
+                }
+              });
+            },
+            itemBuilder: (context) {
+              return <PopupMenuEntry<bool>>[
+                PopupMenuItem<bool>(
+                  value: !widget.darkThemeEnabled,
+                  child: Text(_themeType),
+                )
+              ];
+            },
+          )
         ],
         title: Text('Notes'),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            ListTile(
-              title: Text('Dark Theme'),
-              trailing: Switch(
-                value: widget.darkThemeEnabled,
-                onChanged: bloc.changeTheme,
-              ),
-            )
-          ],
-        ),
       ),
       body: Container(
         padding: EdgeInsets.all(8.0),
@@ -99,17 +125,6 @@ class _HomeViewState extends State<HomeView> with RouteAware {
         ),
       ),
       floatingActionButton: _buildFAB(context, key: _fabKey),
-      //  Row(
-      //   mainAxisAlignment: MainAxisAlignment.end,
-      //   children: <Widget>[
-
-      //     FloatingActionButton(
-      //       onPressed: () {},
-      //       child: Icon(Icons.brush),
-      //     ),
-
-      //   ],
-      // )
     );
   }
 

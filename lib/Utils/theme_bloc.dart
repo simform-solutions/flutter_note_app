@@ -2,7 +2,10 @@ import 'dart:async';
 
 class Bloc{
   final _themeControllor = StreamController<bool>();
-  get changeTheme => _themeControllor.sink.add;
+  changeTheme(bool val){
+    _themeControllor.sink.add(val);
+  }
+  //get changeTheme => _themeControllor.sink.add;
   get darkThemeEnabled => _themeControllor.stream;
 
   dispose(){
