@@ -2,7 +2,7 @@
 
     This Application is Created Using Flutter.
 
-    <img src="preview/preview.gif" height="400em" />
+    ![The example app running in Android](https://github.com/simformsolutions/flutter_note_app/blob/master/preview/preview.gif)
 
 ## Featues 
     * Save Note.
