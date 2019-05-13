@@ -3,6 +3,7 @@ import 'package:notes_app/Utils/db_halper.dart';
 import 'package:notes_app/Utils/theme_bloc.dart';
 import 'package:notes_app/Views/add_note_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:share/share.dart';
 
 final routeObserver = RouteObserver<PageRoute>();
 final duration = const Duration(milliseconds: 300);
@@ -53,7 +54,10 @@ class _HomeViewState extends State<HomeView> with RouteAware {
       appBar: AppBar(
         actions: <Widget>[
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Share.share(
+                  'check out my Nots app \n https://github.com/simformsolutions/flutter_note_app');
+            },
             icon: Icon(Icons.share),
           ),
           PopupMenuButton<bool>(

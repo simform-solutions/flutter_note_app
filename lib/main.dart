@@ -53,6 +53,9 @@ class MyApp extends StatelessWidget {
   _getTheme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool val = prefs.getBool('darkTheme');
+    if(val == null){
+      val = true;
+    }
     print(val);
     return val;
   }
