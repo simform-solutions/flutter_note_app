@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notes_app/Classes/note.dart';
 import 'package:notes_app/Utils/db_halper.dart';
+import 'package:share/share.dart';
 
 class AddNote extends StatefulWidget {
   final Note note;
@@ -52,6 +53,12 @@ class _AddNoteState extends State<AddNote> {
             _deleteNote();
           },
         ),
+        IconButton(
+          icon: Icon(Icons.share),
+          onPressed: () {
+            _shareNote();
+          },
+        ),
       ];
       title = 'View Note';
       _titleControllor = TextEditingController(
@@ -59,6 +66,10 @@ class _AddNoteState extends State<AddNote> {
       );
       _noteControllor = TextEditingController(text: widget.note.note);
     }
+  }
+
+  _shareNote() {
+    Share.share(widget.note.title + '\n\n\n' + widget.note.note);
   }
 
   _deleteNote() {
